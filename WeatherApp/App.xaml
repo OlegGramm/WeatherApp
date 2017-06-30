@@ -1,9 +1,19 @@
 ﻿<Application x:Class="WeatherApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:WeatherApp"
+             xmlns:converters="clr-namespace:WeatherApp.Helpers.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <converters:DateTimeToLabelConverter x:Key="DateTimeToLabelConverter"/>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:DoubleRoundingConverter x:Key="DoubleRoundingConverter"/>
+            <converters:EmptyToVisibilityConverter x:Key="EmptyToVisibilityConverter"/>
+        </ResourceDictionary>
+        
     </Application.Resources>
 </Application>

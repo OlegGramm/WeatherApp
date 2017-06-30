@@ -6,14 +6,341 @@
         xmlns:viewModels="clr-namespace:WeatherApp.ViewModels"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        MinWidth="500"
+        MinHeight="500"
+        Title="Weather">
     <Window.DataContext>
         <viewModels:MainViewModel/>
     </Window.DataContext>
 
-    <Grid Background="White">
+    <Window.Resources>
+    </Window.Resources>
+
+    <Grid Background="Black">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}">
+            <Grid MaxWidth="1250">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel x:Name="CurrentWeatherGrid"
+                            Margin="0,24"
+                            Orientation="Vertical">
+
+                    <TextBlock FontSize="28"
+                               HorizontalAlignment="Center">
+                        <Run Text="{Binding CurrentWeatherData.Name}"/><Run Text=","/>
+                        <Run Text="{Binding CurrentWeatherData.SystemData.Country}"/>
+                    </TextBlock>
+
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Width="56"
+                               Height="56"
+                               Margin="0,0,12,0"
+                               Stretch="Uniform"
+                               Source="{Binding CurrentWeatherData.WeatherList[0].IconPath}"/>
+
+
+                        <TextBlock Grid.Column="1"
+                                   FontSize="56">
+                            <Run Text="{Binding CurrentWeatherData.MainData.Temperature}"/><Run Text="&#186;"/>
+                            <Run Text="C"/>
+                        </TextBlock>
+                    </Grid>
+
+                    <TextBlock FontSize="28"
+                               HorizontalAlignment="Center"
+                               Text="{Binding CurrentWeatherData.WeatherList[0].Main}"
+                               ToolTip="{Binding CurrentWeatherData.WeatherList[0].Description}"/>
+
+                    <TextBlock FontSize="16"
+                               HorizontalAlignment="Center" >
+                        <Run Text="Updated as of"/>
+                        <Run Text="{Binding CurrentWeatherData.CalculationTime, Converter={StaticResource DateTimeToLabelConverter}, ConverterParameter='hh:mm tt'}"/>
+                    </TextBlock>
+
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Margin="6"
+                                   FontSize="12">
+                            <Run Text="Wind"/>
+                            <Run Text="{Binding CurrentWeatherData.Wind.Speed}"/>
+                            <Run Text="m/s"/>
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="1"
+                                   Margin="6"
+                                   FontSize="12">
+                            <Run Text="Pressure"/>
+                            <Run Text="{Binding CurrentWeatherData.MainData.Pressure}"/>
+                            <Run Text="hpa"/>
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="2"
+                                   Margin="6"
+                                   FontSize="12">
+                            <Run Text="Humidity"/>
+                            <Run Text="{Binding CurrentWeatherData.MainData.HumidityPercent}"/><Run Text="%"/>
+                        </TextBlock>
+                    </Grid>
+
+
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Margin="6"
+                                   FontSize="16"
+                                   Visibility="{Binding CurrentWeatherData.Rain, Converter={StaticResource EmptyToVisibilityConverter}}">
+                            <Run Text="Rain"/>
+                            <Run Text="{Binding CurrentWeatherData.Rain.ThreeHour}"/>
+                            <Run Text="mm"/>
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="1"
+                                   Margin="6"
+                                   FontSize="16"
+                                   Visibility="{Binding CurrentWeatherData.Snow, Converter={StaticResource EmptyToVisibilityConverter}}">
+                            <Run Text="Snow"/>
+                            <Run Text="{Binding CurrentWeatherData.Snow.ThreeHour}"/>
+                            <Run Text="mm"/>
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="2"
+                                   Margin="6"
+                                   FontSize="16"
+                                   Visibility="{Binding CurrentWeatherData.Clouds, Converter={StaticResource EmptyToVisibilityConverter}}">
+                            <Run Text="Clouds"/>
+                            <Run Text="{Binding CurrentWeatherData.Clouds.AllPercent}"/><Run Text="%"/>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+
+                <Grid x:Name="DailyGrid"
+                      Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Daily"
+                               FontSize="28"
+                               Margin="24,0,0,12"/>
+
+                    <ListView Grid.Row="1"
+                              Padding="24,0,0,0"
+                              Foreground="White"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              ScrollViewer.CanContentScroll="False"
+                              ItemsSource="{Binding DailyForecast.Items}"
+                              SelectedItem="{Binding SelectedDailyWeatherData, Mode=TwoWay}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate >
+                                <Grid Height="110"
+                                      Width="230">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Margin="4">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock FontSize="18"
+                                                   Text="{Binding CalculationTime, Converter={StaticResource DateTimeToLabelConverter}, ConverterParameter='d MMMM'}"/>
+                                        <TextBlock Grid.Row="1"
+                                                   FontSize="14"
+                                                   Text="{Binding CalculationTime, Converter={StaticResource DateTimeToLabelConverter}, ConverterParameter='dddd'}"/>
+
+
+                                        <StackPanel Grid.Row="2"
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock FontSize="24"
+                                                       Margin="0,0,4,0">
+                                                <Run Text="{Binding Temperature.Maximum, Converter={StaticResource DoubleRoundingConverter}}"/><Run Text="&#186;"/>
+                                            </TextBlock>
+
+                                            <TextBlock FontSize="18"
+                                                       Opacity="0.5"
+                                                       VerticalAlignment="Bottom">
+                                                <Run Text="{Binding Temperature.Minimum, Converter={StaticResource DoubleRoundingConverter}}"/><Run Text="&#186;"/>
+                                            </TextBlock>
+                                        </StackPanel>
+
+                                        <TextBlock Grid.Row="3" 
+                                                   FontSize="16"
+                                                   Text="{Binding WeatherList[0].Main}"/>
+                                    </Grid>
+
+                                    <Grid Grid.Column="1"
+                                          Margin="8,0,0,0"
+                                          VerticalAlignment="Bottom">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Image Width="48"
+                                               Height="48"
+                                               Stretch="Uniform"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Source="{Binding WeatherList[0].IconPath}"/>
+
+                                        <TextBlock Grid.Row="1"
+                                                   Margin="0,2"
+                                                   FontSize="12">
+                                            <Run Text="Clouds"/>
+                                            <Run Text="{Binding CloudsPercent}"/><Run Text="%"/>
+                                        </TextBlock>
+
+                                        <TextBlock Grid.Row="2"
+                                                   Margin="0,2"
+                                                   FontSize="12">
+                                            <Run Text="Pressure"/>
+                                            <Run Text="{Binding Pressure}"/>
+                                            <Run Text="hpa"/>
+                                        </TextBlock>
+
+                                        <TextBlock Grid.Row="3"
+                                                   Margin="0,2,0,4"
+                                                   FontSize="12">
+                                            <Run Text="Humidity"/>
+                                            <Run Text="{Binding HumidityPercent}"/><Run Text="%"/>
+                                        </TextBlock>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+                <Grid x:Name="HourlyGrid"
+                      Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Hourly"
+                               FontSize="28"
+                               Margin="24,24,0,12"/>
+
+                    <ListView Grid.Row="1"
+                              Padding="24,0,0,0"
+                              Foreground="White"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              ScrollViewer.CanContentScroll="False"
+                              ItemsSource="{Binding HourlyData}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate >
+                                <Grid Width="140">
+                                    <StackPanel Margin="4"
+                                                Orientation="Vertical">
+
+                                        <TextBlock FontSize="18"
+                                                   Text="{Binding CalculationLocalTime, Converter={StaticResource DateTimeToLabelConverter}, ConverterParameter='h tt'}"/>
+
+
+                                        <Image Width="40"
+                                               Height="40"
+                                               Stretch="Uniform"
+                                               HorizontalAlignment="Left"
+                                               Source="{Binding WeatherList[0].IconPath}"/>
+
+                                        <TextBlock FontSize="24"
+                                                   Margin="0,0,4,0">
+                                            <Run Text="{Binding MainData.Temperature, Converter={StaticResource DoubleRoundingConverter}}"/><Run Text="&#186;"/>
+                                        </TextBlock>
+
+                                        <TextBlock FontSize="16"
+                                                   Margin="0,2,0,6"
+                                                   Text="{Binding WeatherList[0].Main}"/>
+
+                                        <TextBlock FontSize="12">
+                                            <Run Text="Wind"/>
+                                            <Run Text="{Binding Wind.Speed}"/>
+                                            <Run Text="m/s"/>
+                                        </TextBlock>
+
+                                        <TextBlock FontSize="12">
+                                            <Run Text="Pressure"/>
+                                            <Run Text="{Binding MainData.Pressure}"/>
+                                            <Run Text="hpa"/>
+                                        </TextBlock>
+
+                                        <TextBlock FontSize="12">
+                                            <Run Text="Humidity"/>
+                                            <Run Text="{Binding MainData.HumidityPercent}"/><Run Text="%"/>
+                                        </TextBlock>
+
+                                        <TextBlock FontSize="12"
+                                                   Visibility="{Binding Clouds, Converter={StaticResource EmptyToVisibilityConverter}}">
+                                            <Run Text="Clouds"/>
+                                            <Run Text="{Binding Clouds.AllPercent}"/><Run Text="%"/>
+                                        </TextBlock>
+
+                                        <TextBlock FontSize="12"
+                                                   Visibility="{Binding Rain, Converter={StaticResource EmptyToVisibilityConverter}}">
+                                            <Run Text="Rain"/>
+                                            <Run Text="{Binding Rain.ThreeHour}"/>
+                                            <Run Text="mm"/>
+                                        </TextBlock>
+
+                                        <TextBlock FontSize="16"
+                                                   Visibility="{Binding Snow, Converter={StaticResource EmptyToVisibilityConverter}}">
+                                            <Run Text="Snow"/>
+                                            <Run Text="{Binding Snow.ThreeHour}"/>
+                                            <Run Text="mm"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+
         <controls:ProgressRing IsActive="{Binding IsBusy}" 
-                               Foreground="DodgerBlue"/>
+                               Foreground="White"/>
 
     </Grid>
 </Window>

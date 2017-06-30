@@ -16,5 +16,8 @@
         [JsonProperty("icon")]
         public string Icon { get; set; }
 
+        [JsonIgnore]
+        public string IconPath => $"http://openweathermap.org/img/w/{Icon}.png";
+
     }
 }

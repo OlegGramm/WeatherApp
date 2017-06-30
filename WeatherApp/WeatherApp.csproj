@@ -75,7 +75,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\JsonDateTimeConverter .cs" />
+    <Compile Include="Helpers\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Helpers\Converters\DoubleRoundingConverter.cs" />
+    <Compile Include="Helpers\Converters\EmptyToVisibilityConverter.cs" />
+    <Compile Include="Helpers\Converters\DateTimeToLabelConverter.cs" />
+    <Compile Include="Helpers\JsonDateTimeConverter.cs" />
     <Compile Include="Models\Api\Shared\City.cs" />
     <Compile Include="Models\Api\Shared\Clouds.cs" />
     <Compile Include="Models\Api\Shared\Coordinates.cs" />
@@ -108,6 +112,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Styles\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
