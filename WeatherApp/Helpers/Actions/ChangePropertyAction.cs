@@ -34,7 +34,6 @@
         {
             var target = this.TargetObject ?? this.AssociatedObject;
             var propertyInfo = target.GetType().GetProperty(this.PropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
-
             propertyInfo.SetValue(target, this.PropertyValue);
         }
     }

@@ -6,7 +6,6 @@
 
     public sealed class IgnoreMouseWheelBehavior : Behavior<UIElement>
     {
-
         protected override void OnAttached()
         {
             base.OnAttached();

@@ -34,10 +34,10 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}">
-            <Grid>
+            <Grid Visibility="{Binding IsConnectionFailed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Grid Margin="12">
@@ -48,7 +48,6 @@
                             BorderThickness="0"
                             HorizontalAlignment="Left"
                             Content="Favorite cities >"
-                            Command="{Binding QuerySubmittedCommand}"
                             Style="{StaticResource TransparentButtonStyle}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger SourceObject="{Binding ElementName=FavoritesButton}" EventName="Click">
@@ -144,6 +143,7 @@
 
                             <Button BorderBrush="White"
                                     Background="Transparent"
+                                    ToolTip="Add to favorites"
                                     Style="{StaticResource StarButtonStyle}"
                                     Command="{Binding AddToFavoritesCommand}"
                                     Visibility="{Binding IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -468,14 +468,41 @@
                         </ListView>
                     </Grid>
                 </Grid>
+
+
+                <TextBlock Grid.Row="1"
+                           FontSize="32"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Text="Can't find sity with this name :("
+                           Visibility="{Binding IsSearchSuccess, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}"/>
             </Grid>
         </ScrollViewer>
 
-        <TextBlock FontSize="32"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Text="Can't find sity with this name :("
-                   Visibility="{Binding IsSearchSuccess, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}"/>
+        <Grid VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              Visibility="{Binding IsConnectionFailed, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock FontSize="32"
+                       HorizontalAlignment="Center"
+                       Text="Can't get data. Please, check your internet connection."/>
+
+            <Button Grid.Row="1"
+                    Height="44"
+                    Padding="4"
+                    FontSize="24"
+                    Margin="0,24,0,0"
+                    Content="Refresh"
+                    Background="#11FFFFFF"
+                    HorizontalAlignment="Center"
+                    Command="{Binding RefreshCommand}"
+                    Style="{StaticResource TransparentButtonStyle}"/>
+
+        </Grid>
         
         <controls:ProgressRing IsActive="{Binding IsBusy}" 
                                Foreground="White"/>

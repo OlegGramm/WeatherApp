@@ -11,7 +11,7 @@
             try
             {
                 var format = parameter?.ToString();
-                return ((DateTime)value).ToString(format);
+                return ((DateTime)value).ToString(format, CultureInfo.InvariantCulture);
             }
             catch (InvalidCastException)
             {

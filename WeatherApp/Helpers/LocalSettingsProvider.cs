@@ -1,6 +1,5 @@
 ﻿namespace WeatherApp.Helpers
 {
-    using System.Configuration;
     using System.IO;
     using Newtonsoft.Json;
 
