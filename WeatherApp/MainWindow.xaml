@@ -476,7 +476,7 @@
                            FontSize="32"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           Text="Can't find sity with this name :("
+                           Text="Can't find city with this name :("
                            Visibility="{Binding IsSearchSuccess, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}"/>
             </Grid>
         </ScrollViewer>
