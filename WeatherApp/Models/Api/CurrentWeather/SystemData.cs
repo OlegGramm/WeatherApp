@@ -13,7 +13,7 @@
         public int Id { get; set; }
         
         [JsonProperty("message")]
-        public double Message { get; set; }
+        public string Message { get; set; }
 
         [JsonProperty("country")]
         public string Country { get; set; }

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 5128581,
+    "name": "New York",
+    "coord": {
+      "lon": -74.006,
+      "lat": 40.7143
+    },
+    "country": "US"
+  },
+  {
+    "id": 2643743,
+    "name": "London",
+    "coord": {
+      "lon": -0.1258,
+      "lat": 51.5085
+    },
+    "country": "GB"
+  },
+  {
+    "id": 2988507,
+    "name": "Paris",
+    "coord": {
+      "lon": 2.3488,
+      "lat": 48.8534
+    },
+    "country": "FR"
+  },
+  {
+    "id": 703448,
+    "name": "Kiev",
+    "coord": {
+      "lon": 30.5167,
+      "lat": 50.4333
+    },
+    "country": "UA"
+  }
+]

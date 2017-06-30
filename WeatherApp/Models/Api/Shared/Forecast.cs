@@ -9,7 +9,7 @@
         public int Cod { get; set; }
 
         [JsonProperty("message")]
-        public double Message { get; set; }
+        public string Message { get; set; }
 
         [JsonProperty("city")]
         public City City { get; set; }

@@ -7,6 +7,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Generic.xaml"/>
+                <ResourceDictionary Source="Styles/ListStyles.xaml"/>
+                <ResourceDictionary Source="Styles/ButtonStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <converters:DateTimeToLabelConverter x:Key="DateTimeToLabelConverter"/>
