@@ -45,6 +45,7 @@
                             Height="30"
                             Padding="4"
                             FontSize="18"
+                            Foreground="White"
                             BorderThickness="0"
                             HorizontalAlignment="Left"
                             Content="Favorite cities >"
@@ -77,6 +78,7 @@
                                     <DataTemplate>
                                         <TextBlock Margin="4"
                                                    FontSize="18"
+                                                   Foreground="White"
                                                    Text="{Binding Name}"/>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -495,6 +497,7 @@
                     Height="44"
                     Padding="4"
                     FontSize="24"
+                    Foreground="White"
                     Margin="0,24,0,0"
                     Content="Refresh"
                     Background="#11FFFFFF"
