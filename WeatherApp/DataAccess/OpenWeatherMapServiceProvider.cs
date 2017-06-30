@@ -33,8 +33,8 @@
             var result = await GetRequest<DailyForecast>($"{DailyForecastRequestUri}?q={city}&cnt=6{RequiredParameters}");
 
             //Sometimes includes yesterday
-            result.Items.RemoveAll(item => item.CalculationTime.Date < DateTime.Today);
-            if (result.Items.Count > 5)
+            result.Items?.RemoveAll(item => item.CalculationTime.Date < DateTime.Today);
+            if (result.Items?.Count > 5)
             {
                 result.Items = result.Items.Take(5).ToList();
             }

@@ -7,6 +7,8 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="clr-namespace:WeatherApp.Helpers.Behaviors"
+        xmlns:actions="clr-namespace:WeatherApp.Helpers.Actions"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         MinWidth="500"
         MinHeight="500"
@@ -19,6 +21,9 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
         </Style>
+
+        <system:Boolean x:Key="BooleanFalse">False</system:Boolean>
+        <system:Boolean x:Key="BooleanTrue">True</system:Boolean>
     </Window.Resources>
 
     <Grid>
@@ -35,34 +40,89 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Margin="12"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                    <TextBox Height="30"
-                             Width="200"
-                             FontSize="18"
-                             HorizontalAlignment="Right" 
-                             Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behaviors:EnterPressedHandlerBehavior Command="{Binding QuerySubmittedCommand}" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-
-                    <Button Width="30"
+                <Grid Margin="12">
+                    <Button x:Name="FavoritesButton"
                             Height="30"
-                            Margin="4,0,0,0"
+                            Padding="4"
+                            FontSize="18"
                             BorderThickness="0"
+                            HorizontalAlignment="Left"
+                            Content="Favorite cities >"
                             Command="{Binding QuerySubmittedCommand}"
                             Style="{StaticResource TransparentButtonStyle}">
-                        <Button.Content>
-                            <Image Margin="4"
-                                   Stretch="Uniform"
-                                   Source="Images/search.png"/>
-                        </Button.Content>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger SourceObject="{Binding ElementName=FavoritesButton}" EventName="Click">
+                                <actions:ChangePropertyAction TargetObject="{Binding ElementName=Popup}" PropertyName="IsOpen" PropertyValue="{StaticResource BooleanTrue}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Button>
-                </StackPanel>
+                    
+                    <Popup x:Name="Popup"
+                           IsOpen="False"   
+                           StaysOpen="False"
+                           Placement="Right"
+                           PopupAnimation="Fade"
+                           HorizontalOffset="18"
+                           AllowsTransparency="True"  
+                           PlacementTarget="{Binding ElementName=FavoritesButton}">
+                        <Border Width="150"
+                                CornerRadius="5"
+                                BorderBrush="White" 
+                                BorderThickness="2"
+                                Background="#091526">
+                            <ListView x:Name="CitiesList"
+                                      Background="Transparent"
+                                      ItemsSource="{Binding FavoriteCities}"
+                                      ItemContainerStyle="{StaticResource ListItemStyle}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="4"
+                                                   FontSize="18"
+                                                   Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger SourceObject="{Binding ElementName=CitiesList}" EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding OpenCityCommand}" CommandParameter="{Binding SelectedItem, ElementName=CitiesList}"/>
+                                        <actions:ChangePropertyAction TargetObject="{Binding ElementName=Popup}" PropertyName="IsOpen" PropertyValue="{StaticResource BooleanFalse}"/>
+                                        <actions:ChangePropertyAction TargetObject="{Binding ElementName=CitiesList}" PropertyName="SelectedItem" PropertyValue="{x:Null}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ListView>
+                        </Border>
+                    </Popup>
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <TextBox Height="30"
+                                 Width="200"
+                                 FontSize="18"
+                                 HorizontalAlignment="Right" 
+                                 Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <i:Interaction.Behaviors>
+                                <behaviors:EnterPressedHandlerBehavior Command="{Binding QuerySubmittedCommand}" />
+                            </i:Interaction.Behaviors>
+                        </TextBox>
+
+                        <Button Width="30"
+                                Height="30"
+                                Margin="4,0,0,0"
+                                BorderThickness="0"
+                                Command="{Binding QuerySubmittedCommand}"
+                                Style="{StaticResource TransparentButtonStyle}">
+                            <Button.Content>
+                                <Image Margin="4"
+                                       Stretch="Uniform"
+                                       Source="Images/search.png"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                
                 <Grid Grid.Row="1"
-                      MaxWidth="1250">
+                      MaxWidth="1250"
+                      Visibility="{Binding IsSearchSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -411,6 +471,12 @@
             </Grid>
         </ScrollViewer>
 
+        <TextBlock FontSize="32"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Text="Can't find sity with this name :("
+                   Visibility="{Binding IsSearchSuccess, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}"/>
+        
         <controls:ProgressRing IsActive="{Binding IsBusy}" 
                                Foreground="White"/>
 

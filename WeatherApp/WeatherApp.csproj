@@ -76,6 +76,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataAccess\FavoritesProvider.cs" />
+    <Compile Include="Helpers\Actions\ChangePropertyAction.cs" />
     <Compile Include="Helpers\LocalSettingsProvider.cs" />
     <Compile Include="Helpers\Behaviors\EnterPressedHandlerBehavior.cs" />
     <Compile Include="Helpers\Behaviors\IgnoreMouseWheelBehavior.cs" />

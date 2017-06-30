@@ -9,6 +9,7 @@
     public class MainViewModel : ViewModel
     {
         private string searchQuery;
+        private bool isSearchSuccess = true;
         private CurrentWeatherData currentWeatherData;
         private ThreeHourForecast threeHourForecast;
         private DailyForecast dailyForecast;
@@ -18,11 +19,20 @@
         public MainViewModel()
         {
             this.QuerySubmittedCommand = new RelayCommand(this.QuerySubmittedExecute);
-            this.AddToFavoritesCommand = new RelayCommand(this.AddToFavoritesExecute, () => 
-            this.FavoriteCities.All(item => item.Id != this.CurrentWeatherData?.Id));
+            this.AddToFavoritesCommand = new RelayCommand(this.AddToFavoritesExecute, () => this.FavoriteCities.All(item => item.Id != this.CurrentWeatherData?.Id));
             this.RemoveFromFavoritesCommand = new RelayCommand(this.RemoveFromFavoritesExecute, () => this.FavoriteCities.Any(item => item.Id == this.CurrentWeatherData?.Id));
+            this.OpenCityCommand = new RelayCommand<City>(this.OpenCityExecute);
 
             this.Initialize();
+        }
+        public bool IsSearchSuccess
+        {
+            get => this.isSearchSuccess;
+            set
+            {
+                this.isSearchSuccess = value;
+                base.RaisePropertyChanged();
+            }
         }
 
         public string SearchQuery
@@ -90,6 +100,8 @@
 
         public RelayCommand RemoveFromFavoritesCommand { get; }
 
+        public RelayCommand<City> OpenCityCommand { get; }
+
         private void Initialize()
         {
             this.FavoriteCities = new ObservableCollection<City>(FavoritesProvider.Instance.GetCities());
@@ -115,8 +127,13 @@
             this.ThreeHourForecast = await OpenWeatherMapServiceProvider.Instance.GetThreeHourForecast(city);
             this.DailyForecast = await OpenWeatherMapServiceProvider.Instance.GetDailyForecast(city);
 
-            this.SelectedDailyWeatherData = this.DailyForecast.Items.FirstOrDefault();
-            this.RaiseFavoriteCanExecuteCommands();
+            this.IsSearchSuccess = this.CurrentWeatherData.Cod == 200 && this.ThreeHourForecast.Cod == 200 && this.DailyForecast.Cod == 200;
+
+            if (this.IsSearchSuccess)
+            {
+                this.SelectedDailyWeatherData = this.DailyForecast.Items.FirstOrDefault();
+                this.RaiseFavoriteCanExecuteCommands();
+            }
 
             this.BusyCount--;
         }
@@ -128,6 +145,11 @@
             var items = this.ThreeHourForecast.Items.GetRange(index, 8);
             this.HourlyData = new ObservableCollection<ThreeHourWeatherData>(items);
             base.RaisePropertyChanged(() => this.HourlyData);
+        }
+
+        private void OpenCityExecute(City parameter)
+        {
+            this.SetCityData(parameter.Name);
         }
 
         private void AddToFavoritesExecute()
